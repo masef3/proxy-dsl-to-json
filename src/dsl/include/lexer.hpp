@@ -76,4 +76,6 @@ public:
     explicit lexer(std::string_view source) : source(source) {}
 };
 
+constexpr std::string_view token_to_str(type type_);
+
 #endif
