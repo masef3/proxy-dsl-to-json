@@ -34,5 +34,55 @@ void lexer::print_tokens() const
 }
 
 
+[[nodiscard]] bool lexer::check_eof() const
+{
+    return (position >= source.size());    
+}
+
+
+char lexer::peek() const
+{
+    if (check_eof()) return '\0';
+    return source[ position ];
+}
+
+
+char lexer::read_curr_char()
+{
+    if (check_eof()) return '\0';
+    return source[ position ++ ];
+}
+
+
+void lexer::skip_whitespaces()
+{
+    char curr_char = peek();
+    while (!check_eof()) {
+        if (curr_char == '\t' || curr_char == ' ' || curr_char == '\r') {
+            curr_char = read_curr_char();
+        } else if (curr_char == '\n') {
+            line_pos ++;
+            curr_char = read_curr_char();
+        } else {
+            break;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

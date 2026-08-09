@@ -40,7 +40,8 @@ struct error_info
     type token_type{};
     std::string description{};
     size_t pos{ 1 };
-    
+
+    error_info() = default; 
     error_info(type token_type, const std::exception &err, size_t pos) : 
         token_type(token_type), description(err.what()), pos(pos) {}
 };
@@ -50,6 +51,8 @@ class lexer
 {
     std::string_view source{};
     size_t position{};
+    size_t line_pos{ 1 };
+    
 public:
     std::vector<token> tokens{};    
     
