@@ -21,7 +21,8 @@ enum class type
     TOKEN_EQUALS,
     TOKEN_COLON,
     TOKEN_LPAREN,
-    TOKEN_RPAREN
+    TOKEN_RPAREN,
+    TOKEN_SEMICOLON
 };
 
 
