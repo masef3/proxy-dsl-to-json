@@ -1,0 +1,3 @@
+target: debian
+memory: 100
+cpu:    50
