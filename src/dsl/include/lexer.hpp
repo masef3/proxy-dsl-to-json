@@ -69,9 +69,9 @@ public:
     }
 
     void print_tokens() const;
-    void advance();
+    bool advance();
     char read_curr_char();
-    char peek() const;
+    const char peek() const;
     void skip_whitespaces();
     [[nodiscard]] bool check_eof() const;
     std::vector<token> tokenize();

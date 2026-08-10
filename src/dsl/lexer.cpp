@@ -26,8 +26,6 @@ constexpr std::string_view token_to_str(type type_)
 }
 
 
-using namespace lexer;
-
 void lexer::print_tokens() const
 {
     for (token tok : tokens) {
@@ -42,7 +40,7 @@ void lexer::print_tokens() const
 }
 
 
-char lexer::peek() const
+const char lexer::peek() const
 {
     if (check_eof()) return '\0';
     return source[ position ];
@@ -52,19 +50,22 @@ char lexer::peek() const
 char lexer::read_curr_char()
 {
     if (check_eof()) return '\0';
-    return source[ position ++ ];
+    return source[ position ];
 }
 
 
 void lexer::skip_whitespaces()
 {
-    char curr_char = peek();
+
     while (!check_eof()) {
+        char curr_char = peek();
         if (curr_char == '\t' || curr_char == ' ' || curr_char == '\r') {
-            curr_char = read_curr_char();
+            position ++;
+
         } else if (curr_char == '\n') {
             line_pos ++;
-            curr_char = read_curr_char();
+            position ++;
+
         } else {
             break;
         }
@@ -72,7 +73,15 @@ void lexer::skip_whitespaces()
 }
 
 
+bool lexer::advance()
+{
+    char curr = peek();
+    if ( check_eof() ) return false;
+    else if (curr == '\t' || curr == '\r' || curr == ' ') skip_whitespaces();
+    else position ++;
 
+    return true;
+}
 
 
 
