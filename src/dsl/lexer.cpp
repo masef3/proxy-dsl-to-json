@@ -1,34 +1,33 @@
 #include "include/lexer.hpp"
 #include <print>
 #include <string_view>
+#include <cassert>
 
 
-constexpr std::string_view token_to_str(type type_)
+constexpr std::string_view token_to_str(type token_type)
 {
-    switch(type_) {
-        case type::TOKEN_SUITE: return "TOKEN_SUITE";
-        case type::TOKEN_PORT: return "TOKEN_PORT";
-        case type::TOKEN_RULES: return "TOKEN_RULES";
-        case type::TOKEN_CASE: return "TOKEN_CASE";
-        case type::TOKEN_SPLIT: return "TOKEN_SPLIT";
-        case type::TOKEN_TARGET: return "TOKEN_TARGET";
-        case type::TOKEN_VALUE: return "TOKEN_VALUE";
-        case type::TOKEN_PERCENT: return "TOKEN_PERCENT";
-        case type::TOKEN_PIPE: return "TOKEN_PIPE";
-        case type::TOKEN_EOF: return "TOKEN_EOF";
-        case type::TOKEN_EQUALS: return "TOKEN_EQUALS";
-        case type::TOKEN_COLON: return "TOKEN_COLON";
-        case type::TOKEN_LPAREN: return "TOKEN_LPAREN";
-        case type::TOKEN_RPAREN: return "TOKEN_RPAREN";
-        case type::TOKEN_SEMICOLON: return "TOKEN_SEMICOLON";
-        default:                    return "TOKEN_UNKNOWN";
+    for (const auto &elem : mapped) {
+        type elem_type = elem.token_type_name;
+        if (elem_type == token_type) return elem.type_name;
     }
+    return std::string_view{};
+}
+
+
+constexpr type str_to_token(std::string_view str)
+{
+    for (const auto &elem : mapped) {
+        const std::string_view elem_str = elem.type_name;
+        if (elem_str == str) return elem.token_type_name;
+    }
+    
+    return type::TOKEN_UNKNOWN;
 }
 
 
 void lexer::print_tokens() const
 {
-    for (token tok : tokens) {
+    for (const token &tok : tokens) {
         std::println("{} : {}", tok.lexeme, token_to_str(tok.token_type));
     }
 }
@@ -40,51 +39,74 @@ void lexer::print_tokens() const
 }
 
 
-const char lexer::peek() const
+char lexer::peek() const
 {
     if (check_eof()) return '\0';
     return source[ position ];
 }
 
 
-char lexer::read_curr_char()
+
+bool lexer::is_whitespace() const
 {
-    if (check_eof()) return '\0';
-    return source[ position ];
+    char curr_char = peek();
+    return (curr_char == '\t' || curr_char == ' ' || curr_char == '\r');
 }
 
+
+bool lexer::is_newline() const
+{
+    return peek() == '\n';
+}
 
 void lexer::skip_whitespaces()
 {
 
     while (!check_eof()) {
-        char curr_char = peek();
-        if (curr_char == '\t' || curr_char == ' ' || curr_char == '\r') {
-            position ++;
+        if ( is_whitespace() ) position ++;
 
-        } else if (curr_char == '\n') {
+        else if ( is_newline() ) {
             line_pos ++;
             position ++;
-
-        } else {
-            break;
-        }
+        } else break;
     }
 }
 
 
-bool lexer::advance()
+void lexer::advance()
 {
-    char curr = peek();
-    if ( check_eof() ) return false;
-    else if (curr == '\t' || curr == '\r' || curr == ' ') skip_whitespaces();
-    else position ++;
+    if ( check_eof() ) return;
 
-    return true;
+    position ++;
 }
 
+[[nodiscard]] token lexer::tokenize_token()
+{
+    std::string buff{};
+    while ( !is_whitespace() && !check_eof() && !is_newline() ) {
+        char curr = peek();
+        buff.push_back(curr);
+        advance();
+    }
+    
+    type token_type_ = str_to_token(buff);
+    std::string_view t_name = token_to_str(token_type_);
 
+    return token{ token_type_, t_name }; 
+}
 
+[[nodiscard]] tokens_ lexer::tokenize_source()
+{
+    tokens_ tokens{};
+    while ( !check_eof() ) {
+        skip_whitespaces();
+
+        if ( check_eof() ) break;
+        tokens.push_back( tokenize_token() );
+    }
+
+    return tokens;
+}
 
 
 

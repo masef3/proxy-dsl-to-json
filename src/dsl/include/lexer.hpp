@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <exception>
+#include <array>
 
 
 enum class type
@@ -22,7 +23,9 @@ enum class type
     TOKEN_COLON,
     TOKEN_LPAREN,
     TOKEN_RPAREN,
-    TOKEN_SEMICOLON
+    TOKEN_SEMICOLON,
+    TOKEN_ERROR,
+    TOKEN_UNKNOWN
 };
 
 
@@ -35,11 +38,14 @@ struct token
 };
 
 
+using tokens_ = std::vector<token>;
+
+
 struct error_info
 {
     type token_type{};
     std::string description{};
-    size_t pos{ 1 };
+    std::size_t pos{ 1 };
 
     error_info() = default; 
     error_info(type token_type, const std::exception &err, size_t pos) : 
@@ -50,11 +56,11 @@ struct error_info
 class lexer
 {
     std::string_view source{};
-    size_t position{};
-    size_t line_pos{ 1 };
+    std::size_t position{};
+    std::size_t line_pos{ 1 };
     
 public:
-    std::vector<token> tokens{};    
+    tokens_ tokens{};    
     
     template<type Token>
     [[nodiscard]] token token_init(std::string_view lexeme = "") const
@@ -69,16 +75,50 @@ public:
     }
 
     void print_tokens() const;
-    bool advance();
-    char read_curr_char();
-    const char peek() const;
+    void advance();
+    bool is_whitespace() const;
+    bool is_newline() const;
+    char peek() const;
     void skip_whitespaces();
     [[nodiscard]] bool check_eof() const;
-    std::vector<token> tokenize();
+
+    [[nodiscard]] token tokenize_token();
+    
+    [[nodiscard]] tokens_ tokenize_source();
 
     explicit lexer(std::string_view source) : source(source) {}
 };
 
-constexpr std::string_view token_to_str(type type_);
+
+struct type_mapper
+{
+    std::string_view type_name{};
+    type token_type_name;
+};
+
+
+constexpr std::size_t TOKEN_COUNT = 17;
+constexpr std::string_view token_to_str(type token_type);
+constexpr type str_to_token(std::string_view str);
+using map_ = std::array<type_mapper, TOKEN_COUNT>;
+inline constexpr map_ mapped = 
+{
+    type_mapper{"TOKEN_SUITE",     type::TOKEN_SUITE},
+    type_mapper{"TOKEN_PORT",      type::TOKEN_PORT},
+    type_mapper{"TOKEN_RULES",     type::TOKEN_RULES},
+    type_mapper{"TOKEN_CASE",      type::TOKEN_CASE},
+    type_mapper{"TOKEN_SPLIT",     type::TOKEN_SPLIT},
+    type_mapper{"TOKEN_TARGET",    type::TOKEN_TARGET},
+    type_mapper{"TOKEN_VALUE",     type::TOKEN_VALUE},
+    type_mapper{"TOKEN_PERCENT",   type::TOKEN_PERCENT},
+    type_mapper{"TOKEN_PIPE",      type::TOKEN_PIPE},
+    type_mapper{"TOKEN_EOF",       type::TOKEN_EOF},
+    type_mapper{"TOKEN_EQUALS",    type::TOKEN_EQUALS},
+    type_mapper{"TOKEN_COLON",     type::TOKEN_COLON},
+    type_mapper{"TOKEN_LPAREN",    type::TOKEN_LPAREN},
+    type_mapper{"TOKEN_RPAREN",    type::TOKEN_RPAREN},
+    type_mapper{"TOKEN_SEMICOLON", type::TOKEN_SEMICOLON},
+    type_mapper{"TOKEN_ERROR",     type::TOKEN_ERROR}
+};
 
 #endif
