@@ -26,9 +26,11 @@ constexpr std::string_view token_to_str(type type_)
 }
 
 
+using namespace lexer;
+
 void lexer::print_tokens() const
 {
-    for (token tok : lexer::tokens) {
+    for (token tok : tokens) {
         std::println("{} : {}", tok.lexeme, token_to_str(tok.token_type));
     }
 }
