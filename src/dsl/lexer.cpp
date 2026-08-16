@@ -2,6 +2,9 @@
 #include <print>
 #include <string_view>
 #include <cassert>
+#include <sstream>
+#include <cctype>
+#include <algorithm>
 
 
 constexpr std::string_view token_to_str(type token_type)
@@ -80,42 +83,28 @@ void lexer::advance()
     position ++;
 }
 
-[[nodiscard]] token lexer::tokenize_token()
+[[nodiscard]] std::string lexer::get_next_elem()
 {
     std::string buff{};
-    while ( !is_whitespace() && !check_eof() && !is_newline() ) {
-        char curr = peek();
-        buff.push_back(curr);
+    skip_whitespaces();
+
+    while (!is_whitespace() && !is_newline()) {
+        buff.push_back(peek());
         advance();
     }
-    
-    type token_type_ = str_to_token(buff);
-    std::string_view t_name = token_to_str(token_type_);
 
-    return token{ token_type_, t_name }; 
+    return buff;
 }
-
 [[nodiscard]] tokens_ lexer::tokenize_source()
 {
-    tokens_ tokens{};
-    while ( !check_eof() ) {
-        skip_whitespaces();
-
-        if ( check_eof() ) break;
-        tokens.push_back( tokenize_token() );
+    while (!check_eof()) {
+        
+        std::string tk_str = get_next_elem();
+        std::transform(tk_str.begin(), tk_str.end(), tk_str.begin(), [](unsigned char c) { std::toupper(c); } ); 
+        const std::string curr_token_name = "TOKEN_" + tk_str;
+        std::transform(tk_str.begin(), tk_str.end(), tk_str.begin(), [](unsigned char c) { std::tolower(c); } );
+        
     }
-
-    return tokens;
 }
-
-
-
-
-
-
-
-
-
-
 
 

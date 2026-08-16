@@ -80,11 +80,10 @@ public:
     bool is_newline() const;
     char peek() const;
     void skip_whitespaces();
-    [[nodiscard]] bool check_eof() const;
-
-    [[nodiscard]] token tokenize_token();
-    
+    [[nodiscard]] bool check_eof() const; 
+    [[nodiscard]] std::string get_next_elem();
     [[nodiscard]] tokens_ tokenize_source();
+
 
     explicit lexer(std::string_view source) : source(source) {}
 };
