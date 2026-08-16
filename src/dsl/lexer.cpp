@@ -88,7 +88,7 @@ void lexer::advance()
     std::string buff{};
     skip_whitespaces();
 
-    while (!is_whitespace() && !is_newline()) {
+    while (!is_whitespace() && !is_newline() && !check_eof() ) {
         buff.push_back(peek());
         advance();
     }
@@ -97,14 +97,45 @@ void lexer::advance()
 }
 [[nodiscard]] tokens_ lexer::tokenize_source()
 {
+    tokens_ toks{};
+
+    auto get_token = [&](std::string_view raw, std::string_view tk_name)
+    {
+        if (raw == "=") return type::TOKEN_EQUALS;
+        if (raw == "%") return type::TOKEN_PERCENT;
+        if (raw == "|") return type::TOKEN_PIPE;
+        if (raw == ":") return type::TOKEN_COLON;
+        if (raw == "{") return type::TOKEN_LBRACE;
+        if (raw == "}") return type::TOKEN_RBRACE;
+        if (raw == "(") return type::TOKEN_LPAREN;
+        if (raw == ")") return type::TOKEN_RPAREN;
+        if (raw == ";") return type::TOKEN_SEMICOLON;
+
+        if ((raw.size() >= 2 && raw.front() == '"' && raw.back() == '"') ||
+           (!raw.empty() && std::all_of(raw.begin(), raw.end(), ::isdigit))) {
+               return type::TOKEN_VALUE;
+           }
+
+        for (const type_mapper& tm : mapped) {
+            if (tm.type_name == tk_name) return tm.token_type_name;
+        }
+
+        return type::TOKEN_UNKNOWN;
+    };
+
     while (!check_eof()) {
         
         std::string tk_str = get_next_elem();
-        std::transform(tk_str.begin(), tk_str.end(), tk_str.begin(), [](unsigned char c) { std::toupper(c); } ); 
+        std::transform(tk_str.begin(), tk_str.end(), tk_str.begin(), [](unsigned char c) { return std::toupper(c); } ); 
         const std::string curr_token_name = "TOKEN_" + tk_str;
-        std::transform(tk_str.begin(), tk_str.end(), tk_str.begin(), [](unsigned char c) { std::tolower(c); } );
-        
+        std::transform(tk_str.begin(), tk_str.end(), tk_str.begin(), [](unsigned char c) { return std::tolower(c); } );
+    
+        toks.push_back(token_init( get_token(tk_str, curr_token_name), tk_str ));
     }
+
+    toks.push_back(token_init( type::TOKEN_EOF, "" ));
+
+    return toks;
 }
 
 

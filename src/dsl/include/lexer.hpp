@@ -25,14 +25,16 @@ enum class type
     TOKEN_RPAREN,
     TOKEN_SEMICOLON,
     TOKEN_ERROR,
-    TOKEN_UNKNOWN
+    TOKEN_UNKNOWN,
+    TOKEN_LBRACE,
+    TOKEN_RBRACE
 };
 
 
 struct token
 {
     type token_type{};
-    std::string_view lexeme{};
+    std::string lexeme{};
     token(type token_type, std::string_view lexeme) :
         token_type(token_type), lexeme(lexeme) {} 
 };
@@ -62,10 +64,9 @@ class lexer
 public:
     tokens_ tokens{};    
     
-    template<type Token>
-    [[nodiscard]] token token_init(std::string_view lexeme = "") const
+    [[nodiscard]] token token_init(type token_type, std::string_view lexeme = "") const
     {
-        return token{ Token, lexeme };
+        return token{ token_type, lexeme };
     }
 
     template<type Token>
@@ -96,7 +97,7 @@ struct type_mapper
 };
 
 
-constexpr std::size_t TOKEN_COUNT = 17;
+constexpr std::size_t TOKEN_COUNT = 20;
 constexpr std::string_view token_to_str(type token_type);
 constexpr type str_to_token(std::string_view str);
 using map_ = std::array<type_mapper, TOKEN_COUNT>;
@@ -114,10 +115,14 @@ inline constexpr map_ mapped =
     type_mapper{"TOKEN_EOF",       type::TOKEN_EOF},
     type_mapper{"TOKEN_EQUALS",    type::TOKEN_EQUALS},
     type_mapper{"TOKEN_COLON",     type::TOKEN_COLON},
+    type_mapper{"TOKEN_LBRACE",    type::TOKEN_LBRACE},
+    type_mapper{"TOKEN_RBRACE",    type::TOKEN_RBRACE},
+    type_mapper{"TOKEN_SEMICOLON", type::TOKEN_SEMICOLON},
+    type_mapper{"TOKEN_ERROR",     type::TOKEN_ERROR},
+    type_mapper{"TOKEN_UNKNOWN",   type::TOKEN_UNKNOWN},
     type_mapper{"TOKEN_LPAREN",    type::TOKEN_LPAREN},
     type_mapper{"TOKEN_RPAREN",    type::TOKEN_RPAREN},
-    type_mapper{"TOKEN_SEMICOLON", type::TOKEN_SEMICOLON},
-    type_mapper{"TOKEN_ERROR",     type::TOKEN_ERROR}
+
 };
 
 #endif
