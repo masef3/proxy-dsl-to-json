@@ -20,14 +20,14 @@ enum class type
     TOKEN_PIPE,
     TOKEN_EOF,
     TOKEN_EQUALS,
-    TOKEN_COLON,
     TOKEN_LPAREN,
     TOKEN_RPAREN,
     TOKEN_SEMICOLON,
     TOKEN_ERROR,
     TOKEN_UNKNOWN,
     TOKEN_LBRACE,
-    TOKEN_RBRACE
+    TOKEN_RBRACE,
+    TOKEN_STRING
 };
 
 
@@ -114,7 +114,7 @@ inline constexpr map_ mapped =
     type_mapper{"TOKEN_PIPE",      type::TOKEN_PIPE},
     type_mapper{"TOKEN_EOF",       type::TOKEN_EOF},
     type_mapper{"TOKEN_EQUALS",    type::TOKEN_EQUALS},
-    type_mapper{"TOKEN_COLON",     type::TOKEN_COLON},
+    type_mapper{"TOKEN_STRING",    type::TOKEN_STRING},
     type_mapper{"TOKEN_LBRACE",    type::TOKEN_LBRACE},
     type_mapper{"TOKEN_RBRACE",    type::TOKEN_RBRACE},
     type_mapper{"TOKEN_SEMICOLON", type::TOKEN_SEMICOLON},
