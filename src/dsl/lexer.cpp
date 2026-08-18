@@ -53,7 +53,7 @@ char lexer::peek() const
 bool lexer::is_whitespace() const
 {
     char curr_char = peek();
-    return (curr_char == '\t' || curr_char == ' ' || curr_char == '\r');
+    return (curr_char == '\t' || curr_char == ' ' || curr_char == '\r' || curr_char == ',');
 }
 
 
@@ -99,7 +99,7 @@ void lexer::advance()
 {
     tokens_ toks{};
 
-    auto get_token = [&](std::string_view raw, std::string_view tk_name)
+    auto get_token = [](std::string_view raw, std::string_view tk_name)
     {
         if (raw == "=") return type::TOKEN_EQUALS;
         if (raw == "%") return type::TOKEN_PERCENT;
@@ -110,6 +110,8 @@ void lexer::advance()
         if (raw == "(") return type::TOKEN_LPAREN;
         if (raw == ")") return type::TOKEN_RPAREN;
         if (raw == ";") return type::TOKEN_SEMICOLON;
+
+        if (raw == "") return type::TOKEN_EOF;
 
         if ((raw.size() >= 2 && raw.front() == '"' && raw.back() == '"') ||
            (!raw.empty() && std::all_of(raw.begin(), raw.end(), ::isdigit))) {
@@ -132,9 +134,6 @@ void lexer::advance()
     
         toks.push_back(token_init( get_token(tk_str, curr_token_name), tk_str ));
     }
-
-    toks.push_back(token_init( type::TOKEN_EOF, "" ));
-
     return toks;
 }
 
