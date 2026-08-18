@@ -104,7 +104,6 @@ void lexer::advance()
         if (raw == "=") return type::TOKEN_EQUALS;
         if (raw == "%") return type::TOKEN_PERCENT;
         if (raw == "|") return type::TOKEN_PIPE;
-        if (raw == ":") return type::TOKEN_COLON;
         if (raw == "{") return type::TOKEN_LBRACE;
         if (raw == "}") return type::TOKEN_RBRACE;
         if (raw == "(") return type::TOKEN_LPAREN;
@@ -112,11 +111,8 @@ void lexer::advance()
         if (raw == ";") return type::TOKEN_SEMICOLON;
 
         if (raw == "") return type::TOKEN_EOF;
-
-        if ((raw.size() >= 2 && raw.front() == '"' && raw.back() == '"') ||
-           (!raw.empty() && std::all_of(raw.begin(), raw.end(), ::isdigit))) {
-               return type::TOKEN_VALUE;
-           }
+        if (!raw.empty() && std::all_of(raw.begin(), raw.end(), ::isdigit)) return type::TOKEN_VALUE;
+        if (raw.size() >= 2 && raw.front() == '"' && raw.back() == '"') return type::TOKEN_STRING;
 
         for (const type_mapper& tm : mapped) {
             if (tm.type_name == tk_name) return tm.token_type_name;
