@@ -82,11 +82,8 @@ public:
     grammar::split_opt parse_split();
     grammar::block_opt parse_block();
     grammar::target_opt parse_target();
-
-    parser(std::string_view source) {
-        lexer lex{ source };
-        tokens = lex.tokenize_source();
-    }
+    
+    explicit parser(lexer& lex) : tokens( lex.tokenize_source() ) {}
 };
 
 
