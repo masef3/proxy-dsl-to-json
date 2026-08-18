@@ -1,0 +1,21 @@
+program   = "suite" "{" [ port ] rules "}" ;
+
+port      = "port" "=" VALUE ;
+
+rules     = "rules" "{" { cases } "}" ;
+
+cases     = "case" STRING "{" { operation } "}" ;
+
+operation = split | target | block ;
+
+target    = "target" stringl ;
+
+block     = "block" stringl ;
+
+stringl   = STRING { "," STRING } ;
+
+split_arg = STRING "=" VALUE ;
+
+split     = "split" split_arg { "," split_arg } ;
+
+
