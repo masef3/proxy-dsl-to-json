@@ -60,9 +60,10 @@ class lexer
     std::string_view source{};
     std::size_t position{};
     std::size_t line_pos{ 1 };
+    tokens_ tokens{};
+    friend class parser;
     
 public:
-    tokens_ tokens{};    
     
     [[nodiscard]] token token_init(type token_type, std::string_view lexeme = "") const
     {
@@ -86,7 +87,7 @@ public:
     [[nodiscard]] tokens_ tokenize_source();
 
 
-    explicit lexer(std::string_view source) : source(source) {}
+    explicit lexer(std::string_view& source) : source(source) {}
 };
 
 

@@ -4,6 +4,7 @@ suite {
         case "/login" {
             split  "http://localhost:3000" = 80,
                    "http://localhost:3001" = 20
+
         }
 
         case "/home" {
