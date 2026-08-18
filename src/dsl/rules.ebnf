@@ -18,4 +18,8 @@ split_arg = STRING "=" VALUE ;
 
 split     = "split" split_arg { "," split_arg } ;
 
+block     = "block" block_arg { "," block_arg } ;
+
+block_arg = STRING "(" STRING ")" ;
+
 
