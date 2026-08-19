@@ -58,6 +58,14 @@ namespace grammar {
     ParseOut parse_tokens(const lexer& lex);
 }
 
+struct parse_error
+{
+    type token_t{};
+    std::string descr{};
+
+    parse_error(type token_t, const std::exception& err) : token_t( token_t ), descr( err.what() ) {}
+};
+
 class parser
 {
     tokens_ tokens{};
@@ -66,8 +74,10 @@ class parser
 
 public:
     token peek() const;
-    bool check(type token_type) const;
-    bool match(type token_type);
+    bool check(type expect) const;
+
+    using MatchOut = std::variant<parse_error, bool>;
+    MatchOut match(type expect);
     bool check_end() const;
     
     using ConsumeOut = std::variant<error_info, token>;
@@ -85,6 +95,7 @@ public:
     
     explicit parser(lexer& lex) : tokens( lex.tokenize_source() ) {}
 };
+
 
 
 #endif
