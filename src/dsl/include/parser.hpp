@@ -6,10 +6,10 @@
 #include <optional>
 #include <string>
 #include "lexer.hpp"
+#include <array>
 
 // camelCase -> aliases
 // snake_case -> types
-
 
 namespace grammar {
 
@@ -62,12 +62,41 @@ struct parse_error
 {
     type token_t{};
     std::string descr{};
-
+    
+    parse_error(type token_t, const std::string& message) : token_t( token_t ), descr( message ) {}
     parse_error(type token_t, const std::exception& err) : token_t( token_t ), descr( err.what() ) {}
 };
 
+
+namespace err_decl {
+    
+    enum class error_type
+    {
+        INVALID_METHOD,
+        INVALID_STRING,
+        INVALID_VALUE,
+        SYNTAX_ERROR,
+        MISSING_TOKEN,
+    };
+
+    constexpr std::string_view get_error_type_message(error_type err_t) noexcept
+    {
+        switch( err_t )
+        {
+            case error_type::INVALID_METHOD: return "Parser does not recognize this method";
+            case error_type::INVALID_STRING: return "Parser does not recognize this string value";
+            case error_type::INVALID_VALUE: return "Parser does not recognize this value";
+            case error_type::SYNTAX_ERROR: return "Parser detected syntax error";
+            case error_type::MISSING_TOKEN: return "Parser detected missing token";
+        }
+        return "error unknown";
+    }
+}
+
+
 class parser
 {
+    token prev_token{};
     tokens_ tokens{};
     size_t curr_pos{};
     friend grammar::ParseOut parse_tokens(const lexer& lex);
@@ -75,13 +104,11 @@ class parser
 public:
     token peek() const;
     bool check(type expect) const;
-
-    using MatchOut = std::variant<parse_error, bool>;
-    MatchOut match(type expect);
+    bool match(type expect);
     bool check_end() const;
     
-    using ConsumeOut = std::variant<error_info, token>;
-    ConsumeOut consume(type token_type);
+    using ConsumeOut = std::variant<parse_error, token>;
+    ConsumeOut consume(type expect, const err_decl::error_type err_t);
      
     std::optional<int> parse_port();
     grammar::program parse_program();
