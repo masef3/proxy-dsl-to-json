@@ -24,24 +24,23 @@ bool parser::check(type expect) const
 }
 
 
-parser::MatchOut parser::match(type expect)
+bool parser::match(type expect)
 {
-    if (!check( expect )) return false;
-
-    using ConsumeOut = std::decay_t<decltype(consume(expect))>;
-
-    try {
-        consume(expect);
-    }
-    catch (const std::exception& error) {
-
-        if (std::is_same_v<ConsumeOut, error_info>) {
-            return parse_error{ peek().token_type, error};
-        }
-
-    }
-    return true;
+    if (!check( expect )) return false; 
+    prev_token = peek();
+    return tokens[ curr_pos ++ ].token_type == expect;
 }
+
+
+parser::ConsumeOut parser::consume(type expect, const err_decl::error_type err_t)
+{
+    if (match( expect )) return peek();
+
+     
+}
+
+
+
 
 
 
