@@ -35,6 +35,7 @@ struct token
 {
     type token_type{};
     std::string lexeme{};
+    token() = default;
     token(type token_type, std::string_view lexeme) :
         token_type(token_type), lexeme(lexeme) {} 
 };
