@@ -10,8 +10,6 @@ operation = split | target | block ;
 
 target    = "target" stringl ;
 
-block     = "block" stringl ;
-
 stringl   = STRING { "," STRING } ;
 
 split_arg = STRING "=" VALUE ;
