@@ -109,6 +109,7 @@ void lexer::advance()
         if (raw == "(") return type::TOKEN_LPAREN;
         if (raw == ")") return type::TOKEN_RPAREN;
         if (raw == ";") return type::TOKEN_SEMICOLON;
+        if (raw == ":") return type::TOKEN_COLON;
 
         if (raw == "") return type::TOKEN_EOF;
         if (!raw.empty() && std::all_of(raw.begin(), raw.end(), ::isdigit)) return type::TOKEN_VALUE;
