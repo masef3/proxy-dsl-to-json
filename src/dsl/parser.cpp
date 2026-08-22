@@ -35,8 +35,8 @@ bool parser::match(type expect)
 parser::ConsumeOut parser::consume(type expect, const err_decl::error_type err_t)
 {
     if (match( expect )) return peek();
-
-     
+    
+    return err_decl::parse_error{ expect, get_error_type_message(err_t) };
 }
 
 
