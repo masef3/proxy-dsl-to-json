@@ -28,7 +28,7 @@ namespace grammar {
 
 
     struct split_opt { std::vector<split_arg> args; };
-    struct target_opt { std::vector<StrOpt> args; };
+    struct target_opt { StrOpt args; };
     struct block_opt { std::vector<block_arg> args; };
 
 
@@ -64,6 +64,8 @@ namespace err_decl {
     {
         type token_t{};
         std::string_view descr{};
+
+        void print_error() const;
         
         parse_error(type token_t, std::string_view message) : token_t( token_t ), descr( message ) {}
         parse_error(type token_t, const std::exception& err) : token_t( token_t ), descr( err.what() ) {}
@@ -78,6 +80,7 @@ namespace err_decl {
         INVALID_VALUE,
         SYNTAX_ERROR,
         MISSING_TOKEN,
+        INVALID_TOKEN
     };
 
     constexpr std::string_view get_error_type_message(error_type err_t) noexcept
@@ -89,9 +92,11 @@ namespace err_decl {
             case error_type::INVALID_VALUE: return "Parser does not recognize this value";
             case error_type::SYNTAX_ERROR: return "Parser detected syntax error";
             case error_type::MISSING_TOKEN: return "Parser detected missing token";
+            case error_type::INVALID_TOKEN: return "Parser does not recognize this token or the token does not belong here";
         }
         return "error unknown";
     }
+
 }
 
 
@@ -108,7 +113,7 @@ public:
     bool match(type expect);
     bool check_end() const;
     
-    using ConsumeOut = std::variant<parse_error, token>;
+    using ConsumeOut = std::variant<err_decl::parse_error, token>;
     ConsumeOut consume(type expect, const err_decl::error_type err_t);
      
     std::optional<int> parse_port();
@@ -120,6 +125,8 @@ public:
     grammar::split_opt parse_split();
     grammar::block_opt parse_block();
     grammar::target_opt parse_target();
+
+    bool check_error(ConsumeOut& out) const;
     
     explicit parser(lexer& lex) : tokens( lex.tokenize_source() ) {}
 };
