@@ -58,17 +58,18 @@ namespace grammar {
     ParseOut parse_tokens(const lexer& lex);
 }
 
-struct parse_error
-{
-    type token_t{};
-    std::string descr{};
-    
-    parse_error(type token_t, const std::string& message) : token_t( token_t ), descr( message ) {}
-    parse_error(type token_t, const std::exception& err) : token_t( token_t ), descr( err.what() ) {}
-};
-
-
 namespace err_decl {
+
+    struct parse_error
+    {
+        type token_t{};
+        std::string_view descr{};
+        
+        parse_error(type token_t, std::string_view message) : token_t( token_t ), descr( message ) {}
+        parse_error(type token_t, const std::exception& err) : token_t( token_t ), descr( err.what() ) {}
+    };
+
+
     
     enum class error_type
     {
