@@ -10,6 +10,11 @@ suite {
         case "/home" {
             target "http://localhost:3002"
         }
+
+        case "/api" {
+            block "http://localhost:3003" : ( "Private url" )
+                  "http://localhost:3004" : ( "Private url 2" )
+        }
     }
 
 }
