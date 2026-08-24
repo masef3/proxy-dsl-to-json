@@ -20,16 +20,9 @@ namespace grammar {
         int possibility{};
     };
 
-    struct block_arg
-    {
-        StrOpt url{};
-        StrOpt description{};
-    };
-
-
     struct split_opt { std::vector<split_arg> args; };
     struct target_opt { StrOpt args; };
-    struct block_opt { std::vector<block_arg> args; };
+    struct block_opt { std::vector<std::string_view> args; };
 
 
     using CaseOpt = std::variant<split_opt, target_opt, block_opt>;
@@ -122,6 +115,7 @@ public:
     grammar::rules parse_rules();
     grammar::case_opt parse_case();
     grammar::CaseOpt parse_op();
+    grammar::split_arg parse_split_arg(bool trigger);
     grammar::split_opt parse_split();
     grammar::block_opt parse_block();
     grammar::target_opt parse_target();
