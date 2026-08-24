@@ -12,8 +12,8 @@ suite {
         }
 
         case "/api" {
-            block "http://localhost:3003" : ( "Private url" )
-                  "http://localhost:3004" : ( "Private url 2" )
+            block "http://localhost:3003"
+                  "http://localhost:3004"
         }
     }
 
