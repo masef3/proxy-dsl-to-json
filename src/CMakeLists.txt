@@ -10,7 +10,6 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/dsl/examples
 
 add_executable(dslproxy
     dsl/lexer.cpp
-    dsl/parser.cpp
     main.cpp
 )
 
