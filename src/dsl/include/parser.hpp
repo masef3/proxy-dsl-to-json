@@ -28,10 +28,9 @@ namespace grammar {
     using CaseOpt = std::variant<split_opt, target_opt, block_opt>;
     struct case_opt
     {
-        StrOpt opt_str{};
+        StrOpt case_target_name{};
         CaseOpt args{};
     };
-
 
     using RuleOpt = std::vector<case_opt>;
     struct rules { RuleOpt args; };
@@ -102,9 +101,13 @@ class parser
 
 public:
     token peek() const;
+    token offset_peek(size_t offset = 0) const;
     bool check(type expect) const;
     bool match(type expect);
     bool check_end() const;
+    token get_next() const;
+    token get_prev() const;
+    const size_t get_tokens_size() const;
     
     using ConsumeOut = std::variant<err_decl::parse_error, token>;
     ConsumeOut consume(type expect, const err_decl::error_type err_t);
@@ -113,17 +116,34 @@ public:
     grammar::program parse_program();
     grammar::suite parse_suite();
     grammar::rules parse_rules();
-    grammar::case_opt parse_case();
-    grammar::CaseOpt parse_op();
-    grammar::split_arg parse_split_arg(bool trigger);
+    grammar::case_opt parse_op();
+    grammar::split_arg parse_split_arg(bool& trigger);
     grammar::split_opt parse_split();
     grammar::block_opt parse_block();
     grammar::target_opt parse_target();
 
     bool check_error(ConsumeOut& out) const;
-    
+
+    struct case_opt_mapping 
+    {
+        std::string_view token_name;
+        grammar::CaseOpt(*f)(parser& p);
+
+        case_opt_mapping(std::string_view tname, grammar::CaseOpt(*f)(parser& p)) 
+            : token_name(tname), f(f) {}
+    };
+
+    static inline const std::array<case_opt_mapping, 3> cmap
+    {
+        case_opt_mapping{ "split",  [](parser& p) -> grammar::CaseOpt { return p.parse_split(); }},
+        case_opt_mapping{ "block",  [](parser& p) -> grammar::CaseOpt { return p.parse_block(); }},
+        case_opt_mapping{ "target", [](parser& p) -> grammar::CaseOpt { return p.parse_target(); }}
+    };
+ 
     explicit parser(lexer& lex) : tokens( lex.tokenize_source() ) {}
 };
+
+
 
 
 
