@@ -7,7 +7,7 @@
 #include <algorithm>
 
 
-constexpr std::string_view token_to_str(type token_type)
+std::string_view token_to_str(type token_type)
 {
     for (const auto &elem : mapped) {
         type elem_type = elem.token_type_name;
@@ -17,7 +17,7 @@ constexpr std::string_view token_to_str(type token_type)
 }
 
 
-constexpr type str_to_token(std::string_view str)
+type str_to_token(std::string_view str)
 {
     for (const auto &elem : mapped) {
         const std::string_view elem_str = elem.type_name;
