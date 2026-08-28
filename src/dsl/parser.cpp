@@ -270,14 +270,56 @@ grammar::program parser::parse_program()
     return grammar::program{ suites };
 }
 
-using json = nlohmann::json;
-void grammar::to_json(json& output, const case_opt& curr_case)
-{
-    output["case"] = curr_case.case_target_name;
-    std::visit([&output] (const auto& curr_case_value)
-            {
-                output["args"] = curr_case_value;
-            },
-            curr_case.case_args);
-}
+namespace grammar {
 
+    using json = nlohmann::json;
+    void to_json(json& output, const case_opt& curr_case)
+    {
+        output["case"] = curr_case.case_target_name;
+        std::visit([&output] (const auto& curr_case_value)
+                {
+                    output.update(json(curr_case_value));
+                },
+                curr_case.case_args);
+    }
+
+
+    void to_json(json& output, const grammar::split_opt& arg)
+    {
+        output = json{
+            {"function", "split"},
+            {"targets", arg.split_args}
+        };
+    }
+
+
+    void to_json(json& output, const grammar::block_opt& arg)
+    {
+        output = json{
+            {"function", "block"},
+            {"targets", arg.block_args}
+        };
+    }
+
+
+    void to_json(json& output, const grammar::target_opt& arg)
+    {
+        output = json{
+            {"function", "target"},
+            {"targets", arg.target_args}
+        };
+    }
+
+
+    void to_json(json& output, const grammar::rules& arg)
+    {
+        output = arg.rules_args;
+    }
+
+
+    void to_json(json& output, const grammar::suite& arg)
+    {
+        output["rules"] = arg.rules_;
+    }
+
+}
