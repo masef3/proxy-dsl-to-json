@@ -7,6 +7,7 @@
 #include <string>
 #include "lexer.hpp"
 #include <array>
+#include "nlohmann/json.hpp"
 
 // camelCase -> aliases
 // snake_case -> types
@@ -20,35 +21,45 @@ namespace grammar {
         int possibility{};
     };
 
-    struct split_opt { std::vector<split_arg> args; };
-    struct target_opt { StrOpt args; };
-    struct block_opt { std::vector<std::string_view> args; };
+    struct split_opt { std::vector<split_arg> split_args; };
+    struct target_opt { StrOpt target_args; };
+    struct block_opt { std::vector<StrOpt> block_args; };
 
 
     using CaseOpt = std::variant<split_opt, target_opt, block_opt>;
     struct case_opt
     {
         StrOpt case_target_name{};
-        CaseOpt args{};
+        CaseOpt case_args{};
     };
 
     using RuleOpt = std::vector<case_opt>;
-    struct rules { RuleOpt args; };
+    struct rules { RuleOpt rules_args; };
 
 
     struct suite
     {
         std::optional<int> port{};
-        const rules rules_{};
+        rules rules_{};
+
+        suite() = default;
+        suite(std::optional<int> port, rules rls) : port(port), rules_(std::move(rls)) {}
+        suite(rules rls) : rules_(std::move(rls)) {}
     };
 
+    struct program { std::vector<suite> suites{}; };
 
-    struct program { std::vector<suite> conns{}; };
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(split_arg, url, possibility)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(split_opt, split_args)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(target_opt, target_args)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(block_opt, block_args)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(rules, rules_args)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(suite, port, rules_)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(program, suites)
 
-
-    using ParseOut = std::variant<error_info, program>;
-    ParseOut parse_tokens(const lexer& lex);
+    void to_json(nlohmann::json& output, const case_opt& curr_case);
 }
+
 
 namespace err_decl {
 
@@ -97,11 +108,10 @@ class parser
     token prev_token{};
     tokens_ tokens{};
     size_t curr_pos{};
-    friend grammar::ParseOut parse_tokens(const lexer& lex);
 
 public:
     token peek() const;
-    token offset_peek(size_t offset = 0) const;
+    token offset_peek(size_t offset) const;
     bool check(type expect) const;
     bool match(type expect);
     bool check_end() const;
@@ -142,9 +152,6 @@ public:
  
     explicit parser(lexer& lex) : tokens( lex.tokenize_source() ) {}
 };
-
-
-
 
 
 #endif
