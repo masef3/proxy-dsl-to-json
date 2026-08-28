@@ -102,8 +102,8 @@ struct type_mapper
 
 
 constexpr std::size_t TOKEN_COUNT = 21;
-constexpr std::string_view token_to_str(type token_type);
-constexpr type str_to_token(std::string_view str);
+std::string_view token_to_str(type token_type);
+type str_to_token(std::string_view str);
 using map_ = std::array<type_mapper, TOKEN_COUNT>;
 inline constexpr map_ mapped = 
 {
