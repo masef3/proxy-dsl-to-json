@@ -125,10 +125,18 @@ void lexer::advance()
     while (!check_eof()) {
         
         std::string tk_str = get_next_elem();
+        if (tk_str.size() >= 2 && tk_str.front() == '"' && tk_str.back() == '"') {
+            std::string final_string = tk_str.substr(1, tk_str.size() - 2);
+            toks.push_back(token_init(type::TOKEN_STRING, final_string));
+            continue;
+        }
+
         std::transform(tk_str.begin(), tk_str.end(), tk_str.begin(), [](unsigned char c) { return std::toupper(c); } ); 
         const std::string curr_token_name = "TOKEN_" + tk_str;
+
         std::transform(tk_str.begin(), tk_str.end(), tk_str.begin(), [](unsigned char c) { return std::tolower(c); } );
     
+
         toks.push_back(token_init( get_token(tk_str, curr_token_name), tk_str ));
     }
     return toks;
