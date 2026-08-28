@@ -56,8 +56,13 @@ namespace grammar {
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(rules, rules_args)
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(suite, port, rules_)
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(program, suites)
-
+    
     void to_json(nlohmann::json& output, const case_opt& curr_case);
+    void to_json(nlohmann::json& output, const grammar::split_opt& arg);
+    void to_json(nlohmann::json& output, const grammar::target_opt& arg);
+    void to_json(nlohmann::json& output, const grammar::block_opt& arg);
+    void to_json(nlohmann::json& output, const grammar::rules& arg);
+    void to_json(nlohmann::json& output, const grammar::suite& arg);
 }
 
 
