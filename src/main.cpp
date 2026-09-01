@@ -6,22 +6,25 @@
 #include "dsl/include/lexer.hpp"
 #include "dsl/include/jsongen.hpp"
 #include "nlohmann/json.hpp"
+#include <span>
 
-int main() {
-    std::string source;
-    
-    std::ifstream file("dsl/examples/test1.pxy");
-    if (file.is_open()) {
-        std::stringstream ss;
-        ss << file.rdbuf();
-        source = ss.str();
-    } else {
-        // Fallback string if the file doesn't exist
-        source = "suite port = rules case split target value percent pipe ; : ( )";
+int main(int argc, char** argv) {
+    std::span<char *> args(argv, argc);
+    if (args.size() < 2) {
+        std::cerr << "Pouzitie: " << args[0] << " <cesta_k_suboru>\n";
+        return 1;
     }
+    std::string fp = args[1];
+    
+    std::ifstream file(fp);
+    std::stringstream ss;
+    ss << file.rdbuf();
+    std::string source = ss.str();
 
     lexer lex(source);
     parser pars(lex);
+
+    lex.print_tokens();
     grammar::program program_ast = pars.parse_program();
     export_to_json(program_ast, "jsongen.json");
 
