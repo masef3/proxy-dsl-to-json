@@ -37,32 +37,29 @@ namespace grammar {
     struct rules { RuleOpt rules_args; };
 
 
-    struct suite
+    struct program
     {
         std::optional<int> port{};
         rules rules_{};
 
-        suite() = default;
-        suite(std::optional<int> port, rules rls) : port(port), rules_(std::move(rls)) {}
-        suite(rules rls) : rules_(std::move(rls)) {}
+        program() = default;
+        program(std::optional<int> port, rules rls) : port(port), rules_(std::move(rls)) {}
+        program(rules rls) : rules_(std::move(rls)) {}
     };
-
-    struct program { std::vector<suite> suites{}; };
 
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(split_arg, url, possibility)
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(split_opt, split_args)
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(target_opt, target_args)
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(block_opt, block_args)
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(rules, rules_args)
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(suite, port, rules_)
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(program, suites)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(program, port, rules_)
     
     void to_json(nlohmann::json& output, const case_opt& curr_case);
     void to_json(nlohmann::json& output, const grammar::split_opt& arg);
     void to_json(nlohmann::json& output, const grammar::target_opt& arg);
     void to_json(nlohmann::json& output, const grammar::block_opt& arg);
     void to_json(nlohmann::json& output, const grammar::rules& arg);
-    void to_json(nlohmann::json& output, const grammar::suite& arg);
+    void to_json(nlohmann::json& output, const grammar::program& arg);
 }
 
 
@@ -129,7 +126,6 @@ public:
      
     std::optional<int> parse_port();
     grammar::program parse_program();
-    grammar::suite parse_suite();
     grammar::rules parse_rules();
     grammar::case_opt parse_op();
     grammar::split_arg parse_split_arg(bool& trigger);

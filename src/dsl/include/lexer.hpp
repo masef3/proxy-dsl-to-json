@@ -9,7 +9,7 @@
 
 enum class type
 {
-    TOKEN_SUITE,
+    TOKEN_PROGRAM,
     TOKEN_PORT,
     TOKEN_RULES,
     TOKEN_CASE,
@@ -107,7 +107,7 @@ type str_to_token(std::string_view str);
 using map_ = std::array<type_mapper, TOKEN_COUNT>;
 inline constexpr map_ mapped = 
 {
-    type_mapper{"TOKEN_SUITE",     type::TOKEN_SUITE},
+    type_mapper{"TOKEN_PROGRAM",   type::TOKEN_PROGRAM},
     type_mapper{"TOKEN_PORT",      type::TOKEN_PORT},
     type_mapper{"TOKEN_RULES",     type::TOKEN_RULES},
     type_mapper{"TOKEN_CASE",      type::TOKEN_CASE},
