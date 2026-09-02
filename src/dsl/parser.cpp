@@ -96,9 +96,10 @@ std::optional<int> parser::parse_port()
 
     const token& tok = peek();
     if (std::all_of(tok.lexeme.begin(), tok.lexeme.end(), ::isdigit)) {
+        std::string curr_lex = peek().lexeme;
         out = consume(type::TOKEN_VALUE, err_decl::error_type::INVALID_VALUE);
         if (check_error(out)) return std::nullopt;
-        return std::stoi(tok.lexeme);
+        return std::stoi(curr_lex);
     }
 
     return std::nullopt;
@@ -238,9 +239,9 @@ grammar::rules parser::parse_rules()
 }
 
 
-grammar::suite parser::parse_suite()
+grammar::program parser::parse_program()
 {
-    auto out = consume(type::TOKEN_SUITE, err_decl::error_type::INVALID_TOKEN);
+    auto out = consume(type::TOKEN_PROGRAM, err_decl::error_type::INVALID_TOKEN);
     if (check_error(out)) return {};
 
     out = consume(type::TOKEN_LBRACE, err_decl::error_type::MISSING_TOKEN);
@@ -251,24 +252,12 @@ grammar::suite parser::parse_suite()
 
     out = consume(type::TOKEN_RBRACE, err_decl::error_type::MISSING_TOKEN);
     if (check_error(out)) return {};
+    
+    if (port.has_value()) return grammar::program{ port, args };
 
-    using portTypeRes = std::decay_t<decltype(port)>;
-    if (std::is_same_v<portTypeRes, int>) return grammar::suite{ port, args };
-
-    return grammar::suite{ args };
+    return grammar::program{ args };
 }
 
-
-grammar::program parser::parse_program()
-{
-    std::vector<grammar::suite> suites{};
-
-    while (peek().token_type == type::TOKEN_SUITE) {
-        suites.push_back(parse_suite());
-    }
-
-    return grammar::program{ suites };
-}
 
 namespace grammar {
 
@@ -317,8 +306,9 @@ namespace grammar {
     }
 
 
-    void to_json(json& output, const grammar::suite& arg)
+    void to_json(json& output, const grammar::program& arg)
     {
+        if (arg.port.has_value()) output["port"] = *arg.port;
         output["rules"] = arg.rules_;
     }
 
