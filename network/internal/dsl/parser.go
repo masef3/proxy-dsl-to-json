@@ -28,7 +28,7 @@ type program struct {
 }
 
 
-func (json_filename string) parse() {
+func parse(json_filename string) {
 	content, err := os.ReadFile(json_filename)
 	if err != nil {
 		panic(err)
