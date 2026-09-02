@@ -1,4 +1,4 @@
-suite {
+program {
     port = 8080
     rules {
         case "/login" {
@@ -14,11 +14,8 @@ suite {
         case "/api" {
             block "http://localhost:3003"
                   "http://localhost:3004"
-        }
+        } 
     }
-
 }
-
-
 
 
