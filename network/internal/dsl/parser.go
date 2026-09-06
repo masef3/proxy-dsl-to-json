@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"os"
+	"log"
 )
 
 type splitArg struct {
@@ -29,15 +30,16 @@ type program struct {
 
 
 func parse(json_filename string) {
+	msg := "Something went wrong while parsing json"
 	content, err := os.ReadFile(json_filename)
 	if err != nil {
-		panic(err)
+		log.Fatal(msg)
 	}
 	
 	var programOut program 
 	err = json.Unmarshal(content, &programOut)
 	if err != nil {
-		panic(err)
+		log.Fatal(msg)
 	}
 
 	givenPort := programOut.Port
@@ -52,17 +54,17 @@ func parse(json_filename string) {
 		case "split":
 			err = json.Unmarshal(curr_rule.Targets, &curr_rule.SplitArgs)
 			if err != nil {
-				panic(err)
+				log.Fatal(msg)
 			}
 		case "target":
 			err = json.Unmarshal(curr_rule.Targets, &curr_rule.Target)
 			if err != nil {
-				panic(err)
+				log.Fatal(msg)
 			}
 		case "block":
 			err = json.Unmarshal(curr_rule.Targets, &curr_rule.Block)
 			if err != nil {
-				panic(err)
+				log.Fatal(msg)
 			}
 		}
 	}
