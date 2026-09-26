@@ -17,5 +17,4 @@ add_executable(tj
 )
 
 target_link_libraries(tj PRIVATE nlohmann_json::nlohmann_json)
-
-
+install(TARGETS tj DESTINATION bin)
