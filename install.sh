@@ -2,7 +2,7 @@
 
 set -e
 
-cmake -S . -B build
+cmake -S src -B build
 cmake --build build
 echo "Successful!"
 
