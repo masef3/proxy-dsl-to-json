@@ -16,9 +16,9 @@ int main(int argc, char** argv) {
     }
 
     std::string fp = args[1];
-    auto extension = fp.find(".tjs");
+    auto extension = fp.find(".pdsl");
     if (extension == std::string::npos) {
-        std::cerr << "Given file does not have .tjs extension\n";
+        std::cerr << "Given file does not have .pdsl extension\n";
     }
     
     std::ifstream file(fp);
