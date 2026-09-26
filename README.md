@@ -91,4 +91,21 @@ Using given script should be enough:
 ./install.sh
 ```
 
+## Usage
+
+**If you have it globally installed**
+```
+pdsl <filename.pdsl>
+```
+
+**If you do not have it globally installed**
+The binary should be located in the build directory.
+```
+// Considering you are in src directory
+
+../build/./pdsl <filename.pdsl>
+```
+
+**Output will be generated in the same directory named `jsongen.json`.**
+
 
