@@ -112,7 +112,7 @@ The binary should be located in the build directory.
 ## Grammar
 
 ```ebnf
-program   = "suite" "{" [ port ] rules "}" ;
+program   = "program" "{" [ port ] rules "}" ;
 port      = "port" "=" VALUE ;
 rules     = "rules" "{" { cases } "}" ;
 cases     = "case" STRING "{" { operation } "}" ;
