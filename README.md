@@ -109,3 +109,23 @@ The binary should be located in the build directory.
 **Output will be generated in the same directory named `jsongen.json`.**
 
 
+## Grammar
+
+```ebnf
+program   = "suite" "{" [ port ] rules "}" ;
+port      = "port" "=" VALUE ;
+rules     = "rules" "{" { cases } "}" ;
+cases     = "case" STRING "{" { operation } "}" ;
+
+operation = split | target | block ;
+
+target    = "target" stringl ;
+stringl   = STRING { "," STRING } ;
+
+split     = "split" split_arg { "," split_arg } ;
+split_arg = STRING "=" VALUE ;
+
+block     = "block" block_arg { "," block_arg } ;
+block_arg = STRING "(" STRING ")" ;
+```
+
