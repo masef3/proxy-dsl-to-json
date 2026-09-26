@@ -98,7 +98,7 @@ Using given script should be enough:
 pdsl <filename.pdsl>
 ```
 
-**If you do not have it globally installed**
+**If you do not have it globally installed**\
 The binary should be located in the build directory.
 ```
 // Considering you are in src directory
