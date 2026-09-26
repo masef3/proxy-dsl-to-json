@@ -10,10 +10,11 @@
 
 int main(int argc, char** argv) {
     std::span<char *> args(argv, argc);
-    if (args.size() < 2) {
-        std::cerr << "Pouzitie: " << args[0] << " <cesta_k_suboru>\n";
+    if (args.size() < 2 || args.size() > 2) {
+        std::cerr << "Usage: " << args[0] << " <path_to_file>\n";
         return 1;
     }
+
     std::string fp = args[1];
     
     std::ifstream file(fp);
