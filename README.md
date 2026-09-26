@@ -15,7 +15,7 @@ and this is a try to finally make one.
 
 ## Example
 
-**TJS FILE**
+**INPUT FILE**
 
 ```
 program {
