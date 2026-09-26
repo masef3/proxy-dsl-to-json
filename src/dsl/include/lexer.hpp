@@ -72,7 +72,8 @@ public:
     {
         return token{ token_type, lexeme };
     }
-
+    
+    // may not be used
     template<type Token>
     [[nodiscard]] error_info error_init(const std::exception &err, size_t pos) const 
     {

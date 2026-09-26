@@ -16,6 +16,10 @@ int main(int argc, char** argv) {
     }
 
     std::string fp = args[1];
+    auto extension = fp.find(".tjs");
+    if (extension == std::string::npos) {
+        std::cerr << "Given file does not have .tjs extension\n";
+    }
     
     std::ifstream file(fp);
     std::stringstream ss;
