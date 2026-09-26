@@ -85,7 +85,7 @@ program {
 
 ## Install
 
-Using given script should be enough to start using:
+Using given script should be enough:
 
 ```
 ./install.sh
